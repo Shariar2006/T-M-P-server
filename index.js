@@ -41,12 +41,36 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/myTask/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await createTask.findOne(query)
+      res.send(result)
+  })
+
     app.delete('/myTask/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const result = await createTask.deleteOne(query)
       res.send(result)
   })
+
+  app.patch('/myTask/:id', async (req, res) => {
+    const item = req.body;
+    const id = req.params.id;
+    const filter = { _id: new ObjectId(id) }
+    const updatedDoc = {
+        $set: {
+            title: item.title,
+            status: item.status,
+            description: item.description,
+            dateline: item.dateline,
+            priority: item.priority,
+        }
+    }
+    const result = await createTask.updateOne(filter, updatedDoc)
+    res.send(result)
+})
 
     await client.connect();
     // Send a ping to confirm a successful connection
